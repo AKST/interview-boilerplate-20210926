@@ -16,8 +16,6 @@ async function checkStatus(): Promise<Status> {
   console.info('checking host');
   const response = await fetch(`http://${SERVER_HOST}/`);
   if (!response.ok) return 'not good';
-  const payload = await response.json();
-  console.info(payload);
   return 'ok';
 }
 

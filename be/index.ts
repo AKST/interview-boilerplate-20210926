@@ -1,19 +1,60 @@
 import * as http from 'http';
+import * as pg from 'pg';
 
-const server = http.createServer((req: http.IncomingMessage, res: http.ServerResponse) => {
-  const { method, url } = req;
-  console.log(method, url);
+function createListener({
+  pool,
+}: {
+  pool: pg.Pool,
+}) {
+  return async (req: http.IncomingMessage, res: http.ServerResponse) => {
+    const { method, url } = req;
+    const client = await pool.connect();
 
-  res.writeHead(200, {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-  });
+    try {
+      await client.query(`
+        INSERT INTO logs(method, path)
+        VALUES($1, $2)
+      `, [method, url]);
 
-  if (method === 'GET') {
-    res.write(JSON.stringify({ kind: 'noop' }));
-  }
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      });
 
-  res.end();
-});
+      if (method === 'GET') {
+        const { rows: data } = await client.query(`
+            SELECT method, path, timestamp
+            FROM logs
+            ORDER BY timestamp DESC
+            LIMIT 10
+        `);
 
-server.listen(4322);
+        const body = JSON.stringify({
+          kind: 'list',
+          data,
+        });
+
+        res.write(body);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      client.release();
+      res.end();
+    }
+  };
+}
+
+async function start() {
+  const pool = new pg.Pool({
+    user: 'interview_user',
+    database: 'interview_db',
+    password: 'interview_password',
+  })
+
+  const listener = createListener({ pool });
+  const server = http.createServer(listener);
+  server.listen(4322)
+}
+
+start().catch(e => console.error(e));

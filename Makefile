@@ -5,12 +5,12 @@ PARCEL_BIN=./node_modules/.bin/parcel
 TSC_BIN=./node_modules/.bin/tsc
 TSC_OUT=./dist/tsc-dist
 
-start_fe: $(PARCEL_BIN)./fe/node_modules $(PARCEL_OUT) $(PARCEL_CACHE)
+start_fe: $(PARCEL_BIN) $(PARCEL_OUT) $(PARCEL_CACHE)
 	$(PARCEL_BIN) serve ./fe/index.html \
 		--dist-dir $(PARCEL_OUT) \
 		--cache-dir $(PARCEL_CACHE)
 
-start_be: $(TSC_BIN) ./be/node_modules $(TSC_OUT)
+start_be: $(TSC_BIN) $(TSC_OUT)
 	$(TSC_BIN) \
 		--project ./be/tsconfig.json \
 		--rootDir ./be \
@@ -21,10 +21,6 @@ dist/%:
 	mkdir -p $@
 
 node_modules/%:
-	npm install
-
-%/node_modules:
-	cd $(@D)
 	npm install
 
 clean:
