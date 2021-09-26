@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "jsx": "react-jsx",
+    "lib": [
+      "es2019",
+      "es2020.string",
+      "esNext",
+      "dom"
+    ],
+    "module": "esNext",
+    "noEmit": true,
+    "strict": true,
+    "target": "ES2019",
+    "types": []
+  },
+  "exclude": [
+    "./**/*.test.ts",
+    "./**/*.test.tsx",
+    "./base/testing.ts"
+  ],
+  "include": [
+    "./*.d.ts",
+    "./**/*.d.ts",
+    "./*.ts",
+    "./**/*.ts",
+    "./*.tsx",
+    "./**/*.tsx"
+  ]
+}

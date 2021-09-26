@@ -1,0 +1,11 @@
+{
+  "name": "fe",
+  "version": "1.0.0",
+  "description": "Yolo",
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "parcel": "^2.0.0-rc.0",
+    "typescript": "^4.4.3"
+  }
+}
